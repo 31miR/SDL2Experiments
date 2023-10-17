@@ -11,19 +11,25 @@ private:
   unsigned int radius_;
   unsigned int posX_;
   unsigned int posY_;
+  double velX_;
+  double velY_;
   unsigned int colorRed_;
   unsigned int colorGreen_;
   unsigned int colorBlue_;
 public:
-  Ball(unsigned int radius = 10, unsigned int posX = SCREEN_WIDTH/2, unsigned int posY = SCREEN_HEIGHT/2,
+  Ball(unsigned int radius = 10, unsigned int posX = SCREEN_WIDTH/2, unsigned int posY = SCREEN_HEIGHT/2, double velX = 0, double velY = 0,
     unsigned int colorRed = 255, unsigned int colorGreen = 255, unsigned int colorBlue = 255) : 
-    radius_{radius}, posX_{posX}, posY_{posY}, colorRed_{colorRed}, colorGreen_{colorGreen}, colorBlue_{colorBlue} {};
+    radius_{radius}, posX_{posX}, posY_{posY}, velX_{velX}, velY_{velY}, colorRed_{colorRed}, colorGreen_{colorGreen}, colorBlue_{colorBlue} {};
   unsigned int get_radius() {return radius_;};
   unsigned int get_posX() {return posX_;};
   unsigned int get_posY() {return posY_;};
+  unsigned int get_velX() {return velX_;};
+  unsigned int get_velY() {return velY_;};
   void set_radius(unsigned int radius) {radius_ = radius;};
   void set_posX(unsigned int posX) {posX_ = posX;};
   void set_posY(unsigned int posY) {posY_ = posY;};
+  void set_velX(unsigned int velX) {velX_ = velX;};
+  void set_velY(unsigned int velY) {velY_ = velY;};
 };
 
 bool SDL_init();
@@ -79,7 +85,7 @@ int main(int argc, char* argv[]) {
     printf("Could not initialize SDL stuff, :(\n");
     return 1;
   }
-  Ball ball(20, SCREEN_WIDTH/2, SCREEN_HEIGHT/10, 0xFF, 0xFF, 0xFF);
+  Ball ball(20, SCREEN_WIDTH/2, SCREEN_HEIGHT/10, 0, 0, 0xFF, 0xFF, 0xFF);
   SDL_Rect floor = {0, SCREEN_HEIGHT-10, SCREEN_WIDTH, SCREEN_HEIGHT};
   bool running = true;
   std::chrono::duration<double> deltaT = std::chrono::seconds(0);
