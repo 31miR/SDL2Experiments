@@ -27,7 +27,7 @@ public:
 
 bool SDL_init();
 void SDL_end();
-bool fill_circle();
+void fill_circle(unsigned int radius, unsigned int posX, unsigned int posY);
 
 SDL_Window* gWindow = NULL;
 SDL_Renderer* gRenderer = NULL;
@@ -58,6 +58,20 @@ void SDL_end() {
   gRenderer= NULL;
 }
 
+void fill_circle(unsigned int radius, unsigned int posX, unsigned int posY) {
+  unsigned int beginX = posX > radius ? posX - radius : 0;
+  unsigned int beginY = posY > radius ? posY - radius : 0; // these two lines are only in case the circle is going into negative coordinates [up or left outside screen]
+  for (unsigned int i = beginX; i < posX + radius; ++i) {
+    for (unsigned int j = beginY; j < posY + radius; ++j) {
+      unsigned int distX = i > posX ? i-posX : posX - i;
+      unsigned int distY = j > posY ? j-posY : posY - j;
+      if (distX*distX + distY*distY <= radius*radius) {
+        SDL_RenderDrawPoint(gRenderer, i, j);
+      }
+    }
+  }
+}
+
 
 int main(int argc, char* argv[]) {
   if (!SDL_init()) {
@@ -69,6 +83,7 @@ int main(int argc, char* argv[]) {
     //parse events
     //update world state
     //redraw screen
+    SDL_RenderPresent(gRenderer);
   }
   SDL_end();
 }
