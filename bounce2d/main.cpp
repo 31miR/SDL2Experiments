@@ -7,9 +7,12 @@ const unsigned int SCREEN_HEIGHT = 480;
 const char * TITLE = "bouncy ball";
 const double GRAVITY_CONST = 1.62; //moon gravity
 const double BOUNCE_FACTOR = 0.8;
+const double METER_TO_PIXEL = 1000/(0.26*100);
+//The real aproximation of size of a pixel is 0.26 milimeters, however we want to present a more zoomed out picture so we will pretend that 1 pixel is 26 milimeters
+//i.e. we will asume that the image on screen has a ratio of 1:100 to real world.
 
 //All physics stuff will use meters as units when working with positions, velocities etc. When drawing and using graphics, position values will be translated to pixels
-//by multiplying the position value by 1000 [assuming pixel is close to a milimeter] and casting to unsigned int
+//by multiplying the position value by METER_TO_PIXEL and casting to unsigned int
 class Ball {
 private:
   double radius_;
@@ -84,7 +87,7 @@ void fill_circle(unsigned int radius, unsigned int posX, unsigned int posY) {
 }
 
 void updateState(Ball& ball, std::chrono::duration<double> deltaT) {
-  if (ball.get_posY() + ball.get_radius() >= (SCREEN_HEIGHT - 10)/1000.0) {
+  if (ball.get_posY() + ball.get_radius() >= (SCREEN_HEIGHT - 10)/METER_TO_PIXEL) {
     ball.set_velY(-BOUNCE_FACTOR*ball.get_velY());
   }
   else {
@@ -100,7 +103,7 @@ int main(int argc, char* argv[]) {
     printf("Could not initialize SDL stuff, :(\n");
     return 1;
   }
-  Ball ball(0.05, SCREEN_WIDTH/2000.0, SCREEN_HEIGHT/10000.0, 0, 0, 0xFF, 0xFF, 0xFF);
+  Ball ball(0.5, SCREEN_WIDTH/(2*METER_TO_PIXEL), SCREEN_HEIGHT/(10*METER_TO_PIXEL), 0, 0, 0xFF, 0xFF, 0xFF);
   SDL_Rect floor = {0, SCREEN_HEIGHT-10, SCREEN_WIDTH, SCREEN_HEIGHT};
   bool running = true;
   std::chrono::duration<double> deltaT = std::chrono::seconds(0);
@@ -113,7 +116,7 @@ int main(int argc, char* argv[]) {
     SDL_SetRenderDrawColor(gRenderer, 0, 0, 0x10, 0xFF);
     SDL_RenderClear(gRenderer);
     SDL_SetRenderDrawColor(gRenderer, 0xFF, 0xFF, 0xFF, 0xFF);
-    fill_circle(1000*ball.get_radius(), 1000*ball.get_posX(), 1000*ball.get_posY());
+    fill_circle(METER_TO_PIXEL*ball.get_radius(), METER_TO_PIXEL*ball.get_posX(), METER_TO_PIXEL*ball.get_posY());
     SDL_RenderFillRect(gRenderer, &floor);
     SDL_RenderPresent(gRenderer);
     auto endTime = std::chrono::high_resolution_clock::now();
