@@ -1,5 +1,6 @@
 #include <SDL2/SDL.h>
 #include <stdio.h>
+#include <chrono>
 
 const unsigned int SCREEN_WIDTH = 640;
 const unsigned int SCREEN_HEIGHT = 480;
@@ -78,12 +79,23 @@ int main(int argc, char* argv[]) {
     printf("Could not initialize SDL stuff, :(\n");
     return 1;
   }
+  Ball ball(20, SCREEN_WIDTH/2, SCREEN_HEIGHT/10, 0xFF, 0xFF, 0xFF);
+  SDL_Rect floor = {0, SCREEN_HEIGHT-10, SCREEN_WIDTH, SCREEN_HEIGHT};
   bool running = true;
+  std::chrono::duration<double> deltaT = std::chrono::seconds(0);
   while (running) {
+    auto startTime = std::chrono::high_resolution_clock::now();
     //parse events
     //update world state
     //redraw screen
+    SDL_SetRenderDrawColor(gRenderer, 0, 0, 0x10, 0xFF);
+    SDL_RenderClear(gRenderer);
+    SDL_SetRenderDrawColor(gRenderer, 0xFF, 0xFF, 0xFF, 0xFF);
+    fill_circle(ball.get_radius(), ball.get_posX(), ball.get_posY());
+    SDL_RenderFillRect(gRenderer, &floor);
     SDL_RenderPresent(gRenderer);
+    auto endTime = std::chrono::high_resolution_clock::now();
+    deltaT = endTime - startTime;
   }
   SDL_end();
 }
