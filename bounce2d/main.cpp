@@ -5,6 +5,8 @@
 const unsigned int SCREEN_WIDTH = 640;
 const unsigned int SCREEN_HEIGHT = 480;
 const char * TITLE = "bouncy ball";
+const double GRAVITY_CONST = 9.81;
+const double BOUNCE_FACTOR = 0.8;
 
 class Ball {
 private:
@@ -23,13 +25,13 @@ public:
   unsigned int get_radius() {return radius_;};
   unsigned int get_posX() {return posX_;};
   unsigned int get_posY() {return posY_;};
-  unsigned int get_velX() {return velX_;};
-  unsigned int get_velY() {return velY_;};
+  double get_velX() {return velX_;};
+  double get_velY() {return velY_;};
   void set_radius(unsigned int radius) {radius_ = radius;};
   void set_posX(unsigned int posX) {posX_ = posX;};
   void set_posY(unsigned int posY) {posY_ = posY;};
-  void set_velX(unsigned int velX) {velX_ = velX;};
-  void set_velY(unsigned int velY) {velY_ = velY;};
+  void set_velX(double velX) {velX_ = velX;};
+  void set_velY(double velY) {velY_ = velY;};
 };
 
 bool SDL_init();
@@ -79,6 +81,17 @@ void fill_circle(unsigned int radius, unsigned int posX, unsigned int posY) {
   }
 }
 
+void updateState(Ball& ball, std::chrono::duration<double> deltaT) {
+  if (ball.get_posY() + ball.get_radius() >= SCREEN_HEIGHT - 10) {
+    ball.set_velY(-BOUNCE_FACTOR*ball.get_velY());
+  }
+  else {
+    ball.set_velY(ball.get_velY() + GRAVITY_CONST*deltaT.count());
+  }
+  ball.set_posX(ball.get_posX() + ball.get_velX()*deltaT.count());
+  ball.set_posY(ball.get_posY() + ball.get_velY()*deltaT.count());
+}
+
 
 int main(int argc, char* argv[]) {
   if (!SDL_init()) {
@@ -93,6 +106,7 @@ int main(int argc, char* argv[]) {
     auto startTime = std::chrono::high_resolution_clock::now();
     //parse events
     //update world state
+    updateState(ball, deltaT);
     //redraw screen
     SDL_SetRenderDrawColor(gRenderer, 0, 0, 0x10, 0xFF);
     SDL_RenderClear(gRenderer);
