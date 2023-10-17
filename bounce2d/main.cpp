@@ -5,31 +5,33 @@
 const unsigned int SCREEN_WIDTH = 640;
 const unsigned int SCREEN_HEIGHT = 480;
 const char * TITLE = "bouncy ball";
-const double GRAVITY_CONST = 9.81;
+const double GRAVITY_CONST = 1.62; //moon gravity
 const double BOUNCE_FACTOR = 0.8;
 
+//All physics stuff will use meters as units when working with positions, velocities etc. When drawing and using graphics, position values will be translated to pixels
+//by multiplying the position value by 1000 [assuming pixel is close to a milimeter] and casting to unsigned int
 class Ball {
 private:
-  unsigned int radius_;
-  unsigned int posX_;
-  unsigned int posY_;
+  double radius_;
+  double posX_;
+  double posY_;
   double velX_;
   double velY_;
   unsigned int colorRed_;
   unsigned int colorGreen_;
   unsigned int colorBlue_;
 public:
-  Ball(unsigned int radius = 10, unsigned int posX = SCREEN_WIDTH/2, unsigned int posY = SCREEN_HEIGHT/2, double velX = 0, double velY = 0,
+  Ball(double radius = 10, double posX = SCREEN_WIDTH/2, double posY = SCREEN_HEIGHT/2, double velX = 0, double velY = 0,
     unsigned int colorRed = 255, unsigned int colorGreen = 255, unsigned int colorBlue = 255) : 
     radius_{radius}, posX_{posX}, posY_{posY}, velX_{velX}, velY_{velY}, colorRed_{colorRed}, colorGreen_{colorGreen}, colorBlue_{colorBlue} {};
-  unsigned int get_radius() {return radius_;};
-  unsigned int get_posX() {return posX_;};
-  unsigned int get_posY() {return posY_;};
+  double get_radius() {return radius_;};
+  double get_posX() {return posX_;};
+  double get_posY() {return posY_;};
   double get_velX() {return velX_;};
   double get_velY() {return velY_;};
-  void set_radius(unsigned int radius) {radius_ = radius;};
-  void set_posX(unsigned int posX) {posX_ = posX;};
-  void set_posY(unsigned int posY) {posY_ = posY;};
+  void set_radius(double radius) {radius_ = radius;};
+  void set_posX(double posX) {posX_ = posX;};
+  void set_posY(double posY) {posY_ = posY;};
   void set_velX(double velX) {velX_ = velX;};
   void set_velY(double velY) {velY_ = velY;};
 };
@@ -82,7 +84,7 @@ void fill_circle(unsigned int radius, unsigned int posX, unsigned int posY) {
 }
 
 void updateState(Ball& ball, std::chrono::duration<double> deltaT) {
-  if (ball.get_posY() + ball.get_radius() >= SCREEN_HEIGHT - 10) {
+  if (ball.get_posY() + ball.get_radius() >= (SCREEN_HEIGHT - 10)/1000.0) {
     ball.set_velY(-BOUNCE_FACTOR*ball.get_velY());
   }
   else {
@@ -98,7 +100,7 @@ int main(int argc, char* argv[]) {
     printf("Could not initialize SDL stuff, :(\n");
     return 1;
   }
-  Ball ball(20, SCREEN_WIDTH/2, SCREEN_HEIGHT/10, 0, 0, 0xFF, 0xFF, 0xFF);
+  Ball ball(0.05, SCREEN_WIDTH/2000.0, SCREEN_HEIGHT/10000.0, 0, 0, 0xFF, 0xFF, 0xFF);
   SDL_Rect floor = {0, SCREEN_HEIGHT-10, SCREEN_WIDTH, SCREEN_HEIGHT};
   bool running = true;
   std::chrono::duration<double> deltaT = std::chrono::seconds(0);
@@ -111,7 +113,7 @@ int main(int argc, char* argv[]) {
     SDL_SetRenderDrawColor(gRenderer, 0, 0, 0x10, 0xFF);
     SDL_RenderClear(gRenderer);
     SDL_SetRenderDrawColor(gRenderer, 0xFF, 0xFF, 0xFF, 0xFF);
-    fill_circle(ball.get_radius(), ball.get_posX(), ball.get_posY());
+    fill_circle(1000*ball.get_radius(), 1000*ball.get_posX(), 1000*ball.get_posY());
     SDL_RenderFillRect(gRenderer, &floor);
     SDL_RenderPresent(gRenderer);
     auto endTime = std::chrono::high_resolution_clock::now();
