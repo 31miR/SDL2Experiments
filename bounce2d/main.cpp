@@ -5,6 +5,26 @@ const unsigned int SCREEN_WIDTH = 640;
 const unsigned int SCREEN_HEIGHT = 480;
 const char * TITLE = "bouncy ball";
 
+class Ball {
+private:
+  unsigned int radius_;
+  unsigned int posX_;
+  unsigned int posY_;
+  unsigned int colorRed_;
+  unsigned int colorGreen_;
+  unsigned int colorBlue_;
+public:
+  Ball(unsigned int radius = 10, unsigned int posX = SCREEN_WIDTH/2, unsigned int posY = SCREEN_HEIGHT/2,
+    unsigned int colorRed = 255, unsigned int colorGreen = 255, unsigned int colorBlue = 255) : 
+    radius_{radius}, posX_{posX}, posY_{posY}, colorRed_{colorRed}, colorGreen_{colorGreen}, colorBlue_{colorBlue} {};
+  unsigned int get_radius() {return radius_;};
+  unsigned int get_posX() {return posX_;};
+  unsigned int get_posY() {return posY_;};
+  void set_radius(unsigned int radius) {radius_ = radius;};
+  void set_posX(unsigned int posX) {posX_ = posX;};
+  void set_posY(unsigned int posY) {posY_ = posY;};
+};
+
 bool SDL_init();
 void SDL_end();
 bool fill_circle();
