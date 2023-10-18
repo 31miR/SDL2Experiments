@@ -88,7 +88,7 @@ void fill_circle(unsigned int radius, unsigned int posX, unsigned int posY) {
 
 void updateState(Ball& ball, std::chrono::duration<double> deltaT) {
   if (ball.get_posY() + ball.get_radius() >= (SCREEN_HEIGHT - 10)/METER_TO_PIXEL) {
-    ball.set_velY(-BOUNCE_FACTOR*ball.get_velY());
+    if (ball.get_velY() > 0) ball.set_velY(-BOUNCE_FACTOR*ball.get_velY());
   }
   else {
     ball.set_velY(ball.get_velY() + GRAVITY_CONST*deltaT.count());
