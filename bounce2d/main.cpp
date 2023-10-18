@@ -103,6 +103,7 @@ int main(int argc, char* argv[]) {
     printf("Could not initialize SDL stuff, :(\n");
     return 1;
   }
+  SDL_Event event;
   Ball ball(0.5, SCREEN_WIDTH/(2*METER_TO_PIXEL), SCREEN_HEIGHT/(10*METER_TO_PIXEL), 0, 0, 0xFF, 0xFF, 0xFF);
   SDL_Rect floor = {0, SCREEN_HEIGHT-10, SCREEN_WIDTH, SCREEN_HEIGHT};
   bool running = true;
@@ -110,6 +111,9 @@ int main(int argc, char* argv[]) {
   while (running) {
     auto startTime = std::chrono::high_resolution_clock::now();
     //parse events
+    while (SDL_PollEvent(&event) != 0) {
+      if (event.type == SDL_QUIT) running = false;
+    }
     //update world state
     updateState(ball, deltaT);
     //redraw screen
